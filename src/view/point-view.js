@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 import { formatStringToShortDate, formatStringToDayTime, formatStringToTime, getPointDuration } from '../utils.js';
 
 function createPointTemplate({ point, pointDestinations, pointOffers }) {
@@ -11,7 +11,7 @@ function createPointTemplate({ point, pointDestinations, pointOffers }) {
               ${formatStringToShortDate(dateFrom)}
             </time>
             <div class="event__type">
-                <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+                <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
             </div>
             <h3 class="event__title">${type} ${name}</h3>
             <div class="event__schedule">
@@ -50,31 +50,34 @@ function createPointTemplate({ point, pointDestinations, pointOffers }) {
     `;
 }
 
-export default class PointView {
-  constructor({ point, pointDestinations, pointOffers }) {
-    this.point = point;
-    this.pointDestinations = pointDestinations;
-    this.pointOffers = pointOffers;
+export default class PointView extends AbstractView {
+  #point = null;
+  #pointDestinations = null;
+  #pointOffers = null;
+  #handleEditClick = null;
+
+  constructor({ point, pointDestinations, pointOffers, onEditClick }) {
+    super();
+    this.#point = point;
+    this.#pointDestinations = pointDestinations;
+    this.#pointOffers = pointOffers;
+    this.#handleEditClick = onEditClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
   }
 
-  getTemplate() {
+  get template() {
     return createPointTemplate({
-      point: this.point,
-      pointDestinations: this.pointDestinations,
-      pointOffers: this.pointOffers,
-    });
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      point: this.#point,
+      pointDestinations: this.#pointDestinations,
+      pointOffers: this.#pointOffers
     }
-
-    return this.element;
+    );
   }
 
-  removeElement() {
-    this.element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }
 

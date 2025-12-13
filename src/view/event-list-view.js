@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 function createEditListTemplate() {
   return `
@@ -6,21 +6,9 @@ function createEditListTemplate() {
     `;
 }
 
-export default class EditList {
-  getTemplate() {
+export default class EditList extends AbstractView {
+  get template() {
     return createEditListTemplate();
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }
 
