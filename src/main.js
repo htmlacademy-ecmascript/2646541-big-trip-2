@@ -1,7 +1,7 @@
+import {render, RenderPosition} from './framework/render.js';
 import FilterView from './view/filter-view.js';
 import InfoTrip from './view/info-trip-view.js';
 import BoardPresenter from './presenter/board-presenter.js';
-import { RenderPosition, render } from './render.js';
 import MockService from './service/mock-service.js';
 import DestinationsModel from './model/destinations-model.js';
 import OffersModel from './model/offers-model.js';

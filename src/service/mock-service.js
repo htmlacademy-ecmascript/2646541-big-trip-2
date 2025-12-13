@@ -12,22 +12,26 @@ import {
 } from '../const.js';
 
 export default class MockService {
+  #destinations = [];
+  #offers = [];
+  #points = [];
+
   constructor() {
-    this.destinations = this.generateMockDestinations();
-    this.offers = this.generateMockOffers();
-    this.points = this.generateMockPoints();
+    this.#destinations = this.generateMockDestinations();
+    this.#offers = this.generateMockOffers();
+    this.#points = this.generateMockPoints();
   }
 
   getDestinations() {
-    return this.destinations;
+    return this.#destinations;
   }
 
   getOffers() {
-    return this.offers;
+    return this.#offers;
   }
 
   getPoints() {
-    return this.points;
+    return this.#points;
   }
 
   generateMockDestinations() {
@@ -40,29 +44,30 @@ export default class MockService {
     return TYPES.map((type) => ({
       type,
       offers: Array.from(
-        { length: getRandomPositiveInteger(0, OFFER_COUNT) },
-        () => generateMockOffer()
+        {length: getRandomPositiveInteger(0, OFFER_COUNT)},
+        () => generateMockOffer(type)
       ),
     }));
   }
 
   generateMockPoints() {
-    return Array.from({ length: POINT_COUNT }, () => {
+    return Array.from({length: POINT_COUNT}, () => {
       const type = getRandomArrayElement(TYPES);
-      const destination = getRandomArrayElement(this.destinations);
+      const destination = getRandomArrayElement(this.#destinations);
 
       const hasOffers = getRandomPositiveInteger(0, 1);
-      const offersByType = this.offers.find(
+
+      const offersByType = this.#offers.find(
         (offerByType) => offerByType.type === type
       );
 
-      const offersIds = hasOffers
+      const offerIds = (hasOffers)
         ? offersByType.offers
-          .slice(0, getRandomPositiveInteger(0, 5))
+          .slice(0, getRandomPositiveInteger(0, OFFER_COUNT))
           .map((offer) => offer.id)
         : [];
 
-      return generateMockPoint(type, destination.id, offersIds);
+      return generateMockPoint(type, destination.id, offerIds);
     });
   }
 }
