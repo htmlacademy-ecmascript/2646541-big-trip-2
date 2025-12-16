@@ -10,48 +10,60 @@ const TYPES = [
   'Restaurant',
 ];
 
-const DESCRIPTIONS = [
-  'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'cras aliquet varius magna, non porta ligula feugiat eget.',
-  'fusce tristique felis at fermentum pharetra.',
-  'aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-];
-
-const CITIES = [
-  'Amsterdam',
-  'Chamonix',
-  'Geneva',
-  'Barcelona',
-  'Kyoto',
-  'Sydney',
-  'Vancouver',
-];
-
-const OFFERS = [
-  'Add luggage',
-  'Switch to comfort',
-  'Order Uber',
-  'Add meal',
-  'Travel by train',
-];
-
-const PRICE = {
-  min: 20,
-  max: 2000,
+const Mode = {
+  DEFAULT: 'default',
+  EDITING: 'editing',
 };
 
-const DURATION = {
-  hour: 2,
-  day: 1,
-  min: 20,
+const FilterType = {
+  EVERYTHING: 'Everything',
+  FUTURE:'Future',
+  PRESENT:'Present',
+  PAST: 'Past',
 };
 
-const DESTINATION_COUNT = 3;
+const SortType = {
+  DAY: 'day',
+  TIME: 'time',
+  PRICE: 'price',
+};
 
-const OFFER_COUNT = 3;
+const UserAction = {
+  UPDATE_POINT: 'UPDATE_POINT',
+  ADD_POINT: 'ADD_POINT',
+  DELETE_POINT: 'DELETE_POINT',
+};
 
-const POINT_COUNT = 6;
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+  INIT: 'INIT',
+  ERROR: 'ERROR',
+};
 
+const EditType = {
+  EDITING: 'EDITING',
+  CREATING: 'CREATING',
+};
 
-export { TYPES, DESCRIPTIONS, CITIES, OFFERS, PRICE, DURATION, DESTINATION_COUNT, OFFER_COUNT, POINT_COUNT };
+const Method = {
+  GET: 'GET',
+  PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE'
+};
+
+const TimeLimit = {
+  LOWER_LIMIT: 350,
+  UPPER_LIMIT: 1000,
+};
+
+const NoPointsTextType = {
+  EVERYTHING: 'Click New Event to create your first point',
+  FUTURE: 'There are no future events now',
+  PRESENT: 'There are no present events now',
+  PAST: 'There are no past events now',
+};
+
+export { TYPES, FilterType, Mode, SortType, UserAction, UpdateType, EditType, Method, TimeLimit, NoPointsTextType };

@@ -1,9 +1,11 @@
-import { createElement } from '../render.js';
-import { formatStringToShortDate, formatStringToDayTime, formatStringToTime, getPointDuration } from '../utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import { formatStringToShortDate, formatStringToDayTime, formatStringToTime, getPointDuration } from '../utils/day.js';
+import he from 'he';
 
-function createPointTemplate({ point, pointDestinations, pointOffers }) {
+const createPointTemplate = ({ point, pointDestinations, pointOffers }) => {
   const { basePrice, dateFrom, dateTo, type, isFavorite } = point;
   const { name } = pointDestinations;
+  const selectedOffers = pointOffers.filter((offer) => point.offers.includes(offer.id));
   return `
         <li class="trip-events__item">
             <div class="event">
@@ -11,9 +13,9 @@ function createPointTemplate({ point, pointDestinations, pointOffers }) {
               ${formatStringToShortDate(dateFrom)}
             </time>
             <div class="event__type">
-                <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
+                <img class="event__type-icon" width="42" height="42" src="img/icons/${type.toLowerCase()}.png" alt="Event type icon">
             </div>
-            <h3 class="event__title">${type} ${name}</h3>
+            <h3 class="event__title">${he.encode(String(type))} ${he.encode(String(name))}</h3>
             <div class="event__schedule">
                 <p class="event__time">
                 <time class="event__start-time" datetime=${formatStringToDayTime(dateFrom)}>${formatStringToTime(dateFrom)}</time>
@@ -24,12 +26,12 @@ function createPointTemplate({ point, pointDestinations, pointOffers }) {
             </div>
             <p class="event__price">
                 &euro;&nbsp;<span class="event__price-value">
-                  ${basePrice}
+                ${he.encode(String(basePrice))}
                 </span>
             </p>
             <h4 class="visually-hidden">Offers:</h4>
             <ul class="event__selected-offers">
-              ${pointOffers.map((offer) => `
+              ${selectedOffers.map((offer) => `
                 <li class="event__offer">
                   <span class="event__offer-title">${offer.title}</span><br>
                   +€&nbsp;
@@ -48,33 +50,44 @@ function createPointTemplate({ point, pointDestinations, pointOffers }) {
             </div>
         </li>   
     `;
-}
+};
 
-export default class PointView {
-  constructor({ point, pointDestinations, pointOffers }) {
-    this.point = point;
-    this.pointDestinations = pointDestinations;
-    this.pointOffers = pointOffers;
+export default class PointView extends AbstractView {
+  #point = null;
+  #pointDestinations = null;
+  #pointOffers = null;
+  #handleEditClick = null;
+  #handleFavoriteClick = null;
+
+  constructor({ point, pointDestinations, pointOffers, onEditClick, onFavoriteClick }) {
+    super();
+    this.#point = point;
+    this.#pointDestinations = pointDestinations;
+    this.#pointOffers = pointOffers;
+    this.#handleEditClick = onEditClick;
+    this.#handleFavoriteClick = onFavoriteClick;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
-  getTemplate() {
+  get template() {
     return createPointTemplate({
-      point: this.point,
-      pointDestinations: this.pointDestinations,
-      pointOffers: this.pointOffers,
-    });
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+      point: this.#point,
+      pointDestinations: this.#pointDestinations,
+      pointOffers: this.#pointOffers
     }
-
-    return this.element;
+    );
   }
 
-  removeElement() {
-    this.element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFavoriteClick();
+  };
 }
 
